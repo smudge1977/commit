@@ -54,15 +54,20 @@ if (git rev-parse --is-inside-work-tree > /dev/null ); then
     fi
  
 else
-    [[ -z "$INTERACTIVE" ]] && echo "            apt install git
+    if [[ -z "$INTERACTIVE" ]]; then
+      echo -n "            apt install git
             git config --global user.email \"keith@sneconsulting.co.uk\"
             git config --global user.name \"Keith Marston\"
 
             git init                                              #init as git controlled repo
             git add .                                             #Add all to git (.gitignore)
 
-            git remote add origin https://github.com/xxxxxx.git   #remote repo to push / pull
+            git remote add origin https://github.com/"
+            echo -n $(git rev-parse --show-toplevel | awk -F/ '{print $NF}')
+            echo ".git   #remote repo to push / pull
             git push -u origin master                             #push local master to origin"
+            #git rev-parse --show-toplevel
+    fi
 
 fi
 
