@@ -1,0 +1,71 @@
+#!/bin/bash
+
+#send parameters down teh pipeline:
+args=$@
+[[ -p /dev/stdin ]] && { mapfile -t; set -- "${MAPFILE[@]}"; set -- $@ $args; }
+
+DEBUG="No"
+while (( "$#" )); do
+  case "$1" in
+    -m|--comment)
+      #check_args $1
+      MARG="yes"
+      shift
+      ;;
+    -d|--debug)
+        unset DEBUG
+        shift
+        ;;
+    -i|--interactive)
+        INTERACTIVE="Yes"
+        shift
+        ;;
+    --) # end argument parsing
+      shift
+      break
+      ;;
+    -*|--*=) # unsupported flags
+      echo "Error: Unsupported flag $1" >&2
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
+  esac
+done
+
+if [[ -z "$DEBUG" ]]; then 
+    echo -e "In directory \e[1m$(pwd)\e[0m"
+    echo This is all the args as passed: $args
+    echo This is the left over which will be prepended by what came on teh pipe line: $PARAMS
+fi
+
+[[ -z "$PARAMS" ]] && PARAMS="Work done!"
+
+if (git rev-parse --is-inside-work-tree > /dev/null ); then
+    git add .
+    git commit -m "$PARAMS"
+    #Was anything changed? Do we need to inc version for package build?
+    if (( $(git remote | wc -l) > 0 )); then
+        git push
+    else
+        [[ -z "$INTERACTIVE" ]] && echo -e "\e[91mNo remote set\ngit remote add origin https://github.com/xxxxxx.git   #remote repo to push / pull\e[39m"
+    fi
+ 
+else
+    [[ -z "$INTERACTIVE" ]] && echo "            apt install git
+            git config --global user.email \"keith@sneconsulting.co.uk\"
+            git config --global user.name \"Keith Marston\"
+
+            git init                                              #init as git controlled repo
+            git add .                                             #Add all to git (.gitignore)
+
+            git remote add origin https://github.com/xxxxxx.git   #remote repo to push / pull
+            git push -u origin master                             #push local master to origin"
+
+fi
+
+
+
+

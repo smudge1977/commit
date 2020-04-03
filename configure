@@ -1,0 +1,41 @@
+#!/bin/env bash
+
+#send parameters down teh pipeline:
+args=$@
+[[ -p /dev/stdin ]] && { mapfile -t; set -- "${MAPFILE[@]}"; set -- $@ $args; }
+
+DEBUG="No"
+while (( "$#" )); do
+  case "$1" in
+    -m|--comment)
+      #check_args $1
+      MARG="yes"
+      shift
+      ;;
+    -d|--debug)
+        unset DEBUG
+        shift
+        ;;
+    -i|--interactive)
+        INTERACTIVE="Yes"
+        shift
+        ;;
+    --) # end argument parsing
+      shift
+      break
+      ;;
+    -*|--*=) # unsupported flags
+      echo "Error: Unsupported flag $1" >&2
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
+  esac
+done
+
+echo "Setup development enviroment for this project"
+echo "Run from project root as root - ##no error checking on this yet"
+
+ln -s "$(pwd)/usr/local/bin/commit" /usr/local/bin/commit

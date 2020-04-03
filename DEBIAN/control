@@ -1,0 +1,12 @@
+Package: commit
+Version: 1.0-1
+Section: base
+Priority: optional
+Architecture: all
+Depends: git (>= 2.0.0)
+Maintainer: Keith Marston <keith@sneconsulting.co.uk>
+Description: Git commit and boiler plate
+ Shortcut script to git commits 
+ Also will be extended to produce a boiler plate bash script enviroment
+ 
+
