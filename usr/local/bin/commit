@@ -50,7 +50,7 @@ if (git rev-parse --is-inside-work-tree > /dev/null ); then
     if (( $(git remote | wc -l) > 0 )); then
         git push
     else
-        [[ -z "$INTERACTIVE" ]] && echo -e "\e[91mNo remote set\ngit remote add origin https://github.com/$(git rev-parse --show-toplevel | awk -F/ '{print $NF}').git   #remote repo to push / pull\e[39m"
+        [[ -z "$INTERACTIVE" ]] && echo -e "\e[91mNo remote set\ngit remote add origin git@github.com:smudge1977/$(git rev-parse --show-toplevel | awk -F/ '{print $NF}').git   #remote repo to push / pull\e[39m"
     fi
  
 else
@@ -61,7 +61,7 @@ else
             git init                                              #init as git controlled repo
             git add .                                             #Add all to git (.gitignore)
 
-            git remote add origin https://github.com/$(git rev-parse --show-toplevel | awk -F/ '{print $NF}').git   #remote repo to push / pull
+            git remote add origin git@github.com:smudge1977/$(git rev-parse --show-toplevel | awk -F/ '{print $NF}').git   #remote repo to push / pull
             git push -u origin master                             #push local master to origin"
             #git rev-parse --show-toplevel
    
